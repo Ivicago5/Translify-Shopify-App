@@ -1,0 +1,107 @@
+{% comment %}
+  TRANSLIFY - SHOPIFY TRANSLATION APP
+  Theme App Extension Snippet
+  
+  This snippet should be included in your theme's layout file (usually theme.liquid)
+  to enable translation functionality for customers.
+  
+  Usage:
+  {% render 'translify' %}
+{% endcomment %}
+
+{% comment %} Get app settings from theme app extension {% endcomment %}
+{% assign translify_settings = shop.metafields.translify_app.settings %}
+{% assign translify_enabled = translify_settings.enabled | default: true %}
+
+{% if translify_enabled %}
+  <script>
+    // Pass settings to the translation engine
+    window.translifySettings = {
+      apiEndpoint: {{ translify_settings.api_endpoint | default: 'https://translify.com/api' | json }},
+      merchantId: {{ translify_settings.merchant_id | default: '1' | json }},
+      defaultLanguage: {{ translify_settings.default_language | default: 'en' | json }},
+      availableLanguages: {{ translify_settings.available_languages | default: '["en", "es", "fr", "de"]' | json }},
+      enableAutoTranslation: {{ translify_settings.enable_auto_translation | default: true | json }}
+    };
+  </script>
+
+  {% comment %} Load the translation engine {% endcomment %}
+  {{ 'translify.js' | asset_url | script_tag }}
+
+  {% comment %} Add meta tags for SEO {% endcomment %}
+  <meta name="translify:enabled" content="true">
+  <meta name="translify:default-language" content="{{ translify_settings.default_language | default: 'en' }}">
+  <meta name="translify:available-languages" content="{{ translify_settings.available_languages | default: 'en,es,fr,de' }}">
+
+  {% comment %} Add structured data for search engines {% endcomment %}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": "{{ shop.url }}",
+      "inLanguage": "{{ translify_settings.default_language | default: 'en' }}",
+      "potentialAction": {
+        "@type": "TranslateAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "{{ shop.url }}?lang={language}"
+        },
+        "result": {
+          "@type": "WebPage",
+          "inLanguage": "{language}"
+        }
+      }
+    }
+  </script>
+
+  {% comment %} Add CSS for better integration {% endcomment %}
+  <style>
+    /* Ensure language switcher doesn't break theme layout */
+    .translify-switcher {
+      display: inline-flex !important;
+      align-items: center;
+    }
+    
+    /* Hide original content while translating */
+    .translify-loading {
+      opacity: 0.6;
+      transition: opacity 0.3s ease;
+    }
+    
+    /* Smooth transition for translated content */
+    .translify-translated {
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+    
+    /* Ensure switcher is visible on all themes */
+    .translify-switcher__button {
+      z-index: 1000;
+      position: relative;
+    }
+    
+    .translify-switcher__dropdown {
+      z-index: 1001;
+    }
+    
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .translify-switcher {
+        margin-left: 10px !important;
+      }
+      
+      .translify-switcher__button {
+        padding: 6px 8px !important;
+        font-size: 12px !important;
+      }
+      
+      .translify-switcher__dropdown {
+        min-width: 120px !important;
+      }
+    }
+  </style>
+
+{% else %}
+  {% comment %} App is disabled, don't load anything {% endcomment %}
+  <meta name="translify:enabled" content="false">
+{% endif %} 

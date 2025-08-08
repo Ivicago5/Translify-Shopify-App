@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translify Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .product-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .product-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .product-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .product-price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+        
+        .language-switcher {
+            display: inline-block;
+            position: relative;
+            margin-left: 20px;
+        }
+        
+        .language-button {
+            background: #2c5aa0;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .language-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            min-width: 150px;
+            display: none;
+        }
+        
+        .language-dropdown.show {
+            display: block;
+        }
+        
+        .language-option {
+            display: block;
+            width: 100%;
+            padding: 10px 15px;
+            border: none;
+            background: none;
+            text-align: left;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .language-option:hover {
+            background: #f5f5f5;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        .loading-content {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid #2c5aa0;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px auto;
+        }
+        
+        .loading-text {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🛍️ Translify Demo Store</h1>
+        <p>Click the language switcher to translate all products to different languages.</p>
+        
+        <!-- Simple Language Switcher -->
+        <div class="language-switcher">
+            <button class="language-button" id="current-language">
+                🇺🇸 English
+            </button>
+            <div class="language-dropdown" id="language-dropdown">
+                <button class="language-option" data-lang="en">🇺🇸 English</button>
+                <button class="language-option" data-lang="es">🇪🇸 Español</button>
+                <button class="language-option" data-lang="fr">🇫🇷 Français</button>
+                <button class="language-option" data-lang="de">🇩🇪 Deutsch</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="product-grid">
+        <div class="product-card">
+            <div class="product-title">Blue Cotton T-Shirt</div>
+            <div class="product-description">Comfortable cotton t-shirt in a beautiful blue color. Perfect for everyday wear and casual occasions. Made from 100% organic cotton for maximum comfort.</div>
+            <div class="product-price">$29.99</div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-title">Wireless Bluetooth Headphones</div>
+            <div class="product-description">High-quality wireless headphones with noise cancellation technology. Features long battery life, comfortable ear cushions, and crystal clear sound quality for an immersive listening experience.</div>
+            <div class="product-price">$89.99</div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-title">Stainless Steel Water Bottle</div>
+            <div class="product-description">Eco-friendly stainless steel water bottle that keeps drinks cold for 24 hours or hot for 12 hours. Perfect for outdoor activities, gym sessions, or daily hydration needs.</div>
+            <div class="product-price">$24.99</div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-title">Organic Coffee Beans</div>
+            <div class="product-description">Premium organic coffee beans sourced from sustainable farms. Rich, aromatic flavor with notes of chocolate and caramel. Perfect for coffee enthusiasts who appreciate quality and ethical sourcing.</div>
+            <div class="product-price">$15.99</div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-title">Smart Fitness Watch</div>
+            <div class="product-description">Advanced fitness tracking watch with heart rate monitoring, GPS tracking, and sleep analysis. Water-resistant design with customizable watch faces and long battery life for active lifestyles.</div>
+            <div class="product-price">$199.99</div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-title">Handcrafted Wooden Bowl</div>
+            <div class="product-description">Beautiful handcrafted wooden bowl made from sustainable maple wood. Perfect for serving salads, fruits, or as a decorative piece. Each bowl is unique with natural wood grain patterns.</div>
+            <div class="product-price">$45.99</div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Translating content...</div>
+        </div>
+    </div>
+
+    <script>
+        // Simple Translation Engine
+        class SimpleTranslify {
+            constructor() {
+                this.currentLanguage = 'en';
+                this.apiEndpoint = 'http://localhost:3001/api';
+                this.merchantId = '1';
+                this.setupEventListeners();
+            }
+
+            showLoading() {
+                document.getElementById('loading-overlay').style.display = 'flex';
+            }
+
+            hideLoading() {
+                document.getElementById('loading-overlay').style.display = 'none';
+            }
+
+            updateLoadingText(text) {
+                const loadingText = document.querySelector('.loading-text');
+                if (loadingText) {
+                    loadingText.textContent = text;
+                }
+            }
+
+            setupEventListeners() {
+                const button = document.getElementById('current-language');
+                const dropdown = document.getElementById('language-dropdown');
+
+                // Toggle dropdown
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    dropdown.classList.toggle('show');
+                });
+
+                // Close dropdown when clicking outside
+                document.addEventListener('click', () => {
+                    dropdown.classList.remove('show');
+                });
+
+                // Handle language selection
+                dropdown.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('language-option')) {
+                        const language = e.target.dataset.lang;
+                        this.switchLanguage(language);
+                        dropdown.classList.remove('show');
+                    }
+                });
+            }
+
+            async switchLanguage(newLanguage) {
+                if (newLanguage === this.currentLanguage) return;
+
+                console.log(`Switching to ${newLanguage}`);
+                this.currentLanguage = newLanguage;
+
+                // Update button text
+                const button = document.getElementById('current-language');
+                const languageNames = {
+                    'en': '🇺🇸 English',
+                    'es': '🇪🇸 Español',
+                    'fr': '🇫🇷 Français',
+                    'de': '🇩🇪 Deutsch'
+                };
+                button.textContent = languageNames[newLanguage];
+
+                // Show loading overlay
+                this.showLoading();
+
+                try {
+                    // Store original texts if switching away from English
+                    if (newLanguage !== 'en') {
+                        this.storeOriginalTexts();
+                    }
+
+                    // Translate all product content
+                    await this.translatePage(newLanguage);
+                } finally {
+                    // Hide loading overlay
+                    this.hideLoading();
+                }
+            }
+
+            storeOriginalTexts() {
+                const elements = document.querySelectorAll('.product-title, .product-description');
+                elements.forEach(element => {
+                    if (!element.hasAttribute('data-original-text')) {
+                        element.setAttribute('data-original-text', element.textContent.trim());
+                    }
+                });
+            }
+
+            async translatePage(targetLanguage) {
+                const elements = document.querySelectorAll('.product-title, .product-description');
+                
+                // If switching back to English, restore original texts
+                if (targetLanguage === 'en') {
+                    elements.forEach(element => {
+                        const originalText = element.getAttribute('data-original-text');
+                        if (originalText) {
+                            element.textContent = originalText;
+                        }
+                    });
+                    return;
+                }
+                
+                // Always use original English texts for translation
+                const textsToTranslate = [];
+                const elementMap = new Map();
+                
+                elements.forEach(element => {
+                    // Use original text if available, otherwise use current text
+                    const originalText = element.getAttribute('data-original-text');
+                    const textToTranslate = originalText || element.textContent.trim();
+                    
+                    if (textToTranslate && !textsToTranslate.includes(textToTranslate)) {
+                        textsToTranslate.push(textToTranslate);
+                        elementMap.set(textToTranslate, []);
+                    }
+                    if (textToTranslate) {
+                        elementMap.get(textToTranslate).push(element);
+                    }
+                });
+                
+                console.log(`Translating ${textsToTranslate.length} unique texts from English to ${targetLanguage}...`);
+                this.updateLoadingText(`Translating ${textsToTranslate.length} texts to ${targetLanguage}...`);
+                
+                // Progressive translation with better rate limiting
+                const batchSize = 5; // Translate 5 texts at a time
+                const delayBetweenBatches = 1000; // 1 second between batches
+                const totalBatches = Math.ceil(textsToTranslate.length / batchSize);
+                
+                for (let i = 0; i < textsToTranslate.length; i += batchSize) {
+                    const batch = textsToTranslate.slice(i, i + batchSize);
+                    const currentBatch = Math.floor(i/batchSize) + 1;
+                    console.log(`Processing batch ${currentBatch}/${totalBatches}`);
+                    this.updateLoadingText(`Translating batch ${currentBatch}/${totalBatches}...`);
+                    
+                    // Process batch in parallel with individual delays
+                    const batchPromises = batch.map(async (text, batchIndex) => {
+                        const elementsToUpdate = elementMap.get(text);
+                        
+                        // Add small delay between individual requests in batch
+                        await new Promise(resolve => setTimeout(resolve, batchIndex * 100));
+                        
+                        try {
+                            const translation = await this.getTranslation(text, targetLanguage);
+                            if (translation) {
+                                elementsToUpdate.forEach(element => {
+                                    element.textContent = translation;
+                                });
+                                return { success: true, text, translation };
+                            }
+                        } catch (error) {
+                            console.error(`Translation failed for "${text}":`, error);
+                            
+                            // Handle rate limiting with exponential backoff
+                            if (error.message.includes('429')) {
+                                console.log(`Rate limited for "${text}", waiting 10 seconds...`);
+                                await new Promise(resolve => setTimeout(resolve, 10000));
+                                
+                                // Try again after waiting
+                                try {
+                                    const translation = await this.getTranslation(text, targetLanguage);
+                                    if (translation) {
+                                        elementsToUpdate.forEach(element => {
+                                            element.textContent = translation;
+                                        });
+                                        return { success: true, text, translation };
+                                    }
+                                } catch (retryError) {
+                                    console.error(`Retry failed for "${text}":`, retryError);
+                                }
+                            }
+                            
+                            return { success: false, text, error: error.message };
+                        }
+                    });
+                    
+                    // Wait for batch to complete
+                    const batchResults = await Promise.all(batchPromises);
+                    const successful = batchResults.filter(r => r.success).length;
+                    const failed = batchResults.filter(r => !r.success).length;
+                    
+                    console.log(`Batch completed: ${successful} successful, ${failed} failed`);
+                    
+                    // Add delay between batches
+                    if (i + batchSize < textsToTranslate.length) {
+                        console.log(`Waiting ${delayBetweenBatches}ms before next batch...`);
+                        this.updateLoadingText(`Waiting before next batch...`);
+                        await new Promise(resolve => setTimeout(resolve, delayBetweenBatches));
+                    }
+                }
+                
+                console.log('Translation process completed');
+                this.updateLoadingText('Translation completed!');
+            }
+
+            async getTranslation(text, targetLanguage) {
+                try {
+                    console.log(`Making API request for: "${text}" to ${targetLanguage}`);
+                    
+                    const response = await fetch(`${this.apiEndpoint}/translations/translate`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Merchant-ID': this.merchantId
+                        },
+                        body: JSON.stringify({
+                            text: text,
+                            targetLanguage: targetLanguage
+                        })
+                    });
+
+                    console.log(`Response status: ${response.status}`);
+
+                    if (response.status === 429) {
+                        throw new Error('Rate limited (429)');
+                    }
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    console.log(`Translation received: "${data.translation}"`);
+                    return data.translation;
+                } catch (error) {
+                    console.error('API Error:', error);
+                    if (error.message.includes('429')) {
+                        throw error; // Re-throw rate limit errors
+                    }
+                    return text; // Return original text on other errors
+                }
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.translify = new SimpleTranslify();
+            console.log('Translify initialized');
+        });
+    </script>
+</body>
+</html> 

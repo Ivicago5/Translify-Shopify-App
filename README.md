@@ -1,242 +1,285 @@
-# Shopify App Template for Node
+# Translify - Shopify Translation App
 
-This is a template for building a [Shopify app](https://shopify.dev/docs/apps/getting-started) using Node and React. It contains the basics for building a Shopify app.
+A powerful translation management app for Shopify stores, similar to Weglot or Transcy. Translify helps merchants translate their store content into multiple languages with automated translation, manual editing, and seamless Shopify integration.
 
-Rather than cloning this repo, you can use your preferred package manager and the Shopify CLI with [these steps](#installing-the-template).
+## 🚀 Features
 
-## Benefits
+### Core Functionality
+- **Multi-language Support**: Translate into Spanish, French, German, Italian, Portuguese, and more
+- **Automated Translation**: Google Translate integration for instant translations
+- **Manual Editor**: Fine-tune translations with a professional editing interface
+- **Glossary Management**: Maintain consistent terminology across translations
+- **Shopify Integration**: Direct sync with Shopify's Translation API
+- **Background Processing**: Queue-based translation jobs for scalability
 
-Shopify apps are built on a variety of Shopify tools to create a great merchant experience. The [create an app](https://shopify.dev/docs/apps/getting-started/create) tutorial in our developer documentation will guide you through creating a Shopify app using this template.
+### Admin Interface
+- **Dashboard**: Overview of translation progress and statistics
+- **Translation Editor**: Bulk editing with filters and search
+- **Settings**: Configure languages, automation rules, and API keys
+- **Glossary**: Manage translation terminology and consistency
+- **Testing**: API connection testing and translation validation
 
-The Node app template comes with the following out-of-the-box functionality:
+### Storefront Features
+- **Language Switcher**: Allow customers to switch between languages
+- **Hreflang Tags**: SEO-optimized language targeting
+- **Translated Meta Content**: Complete translation of titles, descriptions, and content
 
-- OAuth: Installing the app and granting permissions
-- GraphQL Admin API: Querying or mutating Shopify admin data
-- REST Admin API: Resource classes to interact with the API
-- Shopify-specific tooling:
-  - AppBridge
-  - Polaris
-  - Webhooks
+## 🏗️ Architecture
 
-## Tech Stack
-
-This template combines a number of third party open-source tools:
-
-- [Express](https://expressjs.com/) builds the backend.
-- [Vite](https://vitejs.dev/) builds the [React](https://reactjs.org/) frontend.
-- [React Router](https://reactrouter.com/) is used for routing. We wrap this with file-based routing.
-- [React Query](https://react-query.tanstack.com/) queries the Admin API.
-- [`i18next`](https://www.i18next.com/) and related libraries are used to internationalize the frontend.
-  - [`react-i18next`](https://react.i18next.com/) is used for React-specific i18n functionality.
-  - [`i18next-resources-to-backend`](https://github.com/i18next/i18next-resources-to-backend) is used to dynamically load app translations.
-  - [`@formatjs/intl-localematcher`](https://formatjs.io/docs/polyfills/intl-localematcher/) is used to match the user locale with supported app locales.
-  - [`@formatjs/intl-locale`](https://formatjs.io/docs/polyfills/intl-locale) is used as a polyfill for [`Intl.Locale`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale) if necessary.
-  - [`@formatjs/intl-pluralrules`](https://formatjs.io/docs/polyfills/intl-pluralrules) is used as a polyfill for [`Intl.PluralRules`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/PluralRules) if necessary.
-
-The following Shopify tools complement these third-party tools to ease app development:
-
-- [Shopify API library](https://github.com/Shopify/shopify-node-api) adds OAuth to the Express backend. This lets users install the app and grant scope permissions.
-- [App Bridge React](https://shopify.dev/docs/apps/tools/app-bridge/getting-started/using-react) adds [authentication to API requests](https://shopify.dev/docs/api/app-bridge-library/apis/resource-fetching) in the frontend and renders components outside of the App’s iFrame.
-- [Polaris React](https://polaris.shopify.com/) is a powerful design system and component library that helps developers build high quality, consistent experiences for Shopify merchants.
-- [File-based routing](https://github.com/Shopify/shopify-frontend-template-react/blob/main/Routes.jsx) makes creating new pages easier.
-- [`@shopify/i18next-shopify`](https://github.com/Shopify/i18next-shopify) is a plugin for [`i18next`](https://www.i18next.com/) that allows translation files to follow the same JSON schema used by Shopify [app extensions](https://shopify.dev/docs/apps/checkout/best-practices/localizing-ui-extensions#how-it-works) and [themes](https://shopify.dev/docs/themes/architecture/locales/storefront-locale-files#usage).
-
-## Getting started
-
-### Requirements
-
-1. You must [download and install Node.js](https://nodejs.org/en/download/) if you don't already have it.
-1. You must [create a Shopify partner account](https://partners.shopify.com/signup) if you don’t have one.
-1. You must create a store for testing if you don't have one, either a [development store](https://help.shopify.com/en/partners/dashboard/development-stores#create-a-development-store) or a [Shopify Plus sandbox store](https://help.shopify.com/en/partners/dashboard/managing-stores/plus-sandbox-store).
-
-### Installing the template
-
-This template can be installed using your preferred package manager:
-
-Using yarn:
-
-```shell
-yarn create @shopify/app --template=node
+### Backend (Node.js/Express)
+```
+backend/
+├── index.js              # Main server entry point
+├── db/
+│   └── index.js          # Database setup and migrations
+├── models/
+│   ├── Merchant.js       # Merchant data model
+│   └── Translation.js    # Translation data model
+├── services/
+│   ├── translationService.js  # Google Translate integration
+│   └── shopifyService.js      # Shopify API integration
+├── jobs/
+│   └── translationJob.js      # Background job processing
+├── api/
+│   ├── translations.js        # Translation CRUD endpoints
+│   ├── settings.js           # Settings management
+│   └── webhooks.js           # Shopify webhook handlers
+└── package.json
 ```
 
-Using npm:
-
-```shell
-npm init @shopify/app@latest -- --template=node
+### Frontend (React/Polaris)
+```
+web/frontend/
+├── pages/
+│   ├── Dashboard.jsx          # Main dashboard
+│   ├── TranslationEditor.jsx  # Translation management
+│   ├── Settings.jsx          # App configuration
+│   └── Glossary.jsx          # Glossary management
+├── components/
+│   └── NavigationMenu.jsx    # App navigation
+├── utils/
+│   └── api.js               # API communication
+└── package.json
 ```
 
-Using pnpm:
+## 🛠️ Installation & Setup
 
-```shell
-pnpm create @shopify/app@latest --template=node
+### Prerequisites
+- Node.js 18+
+- Redis server
+- SQLite (for development) or PostgreSQL (for production)
+- Google Translate API key
+- Shopify Partner account
+
+### Quick Start
+
+1. **Clone and install dependencies:**
+```bash
+git clone <repository-url>
+cd translify
+npm install
+cd backend && npm install
+cd ../web/frontend && npm install
 ```
 
-This will clone the template and install the required dependencies.
+2. **Set up environment variables:**
+```bash
+# Backend (.env)
+BACKEND_PORT=3001
+DATABASE_URL=sqlite:./data/translify.db
+REDIS_URL=redis://localhost:6379
+GOOGLE_TRANSLATE_API_KEY=your_api_key_here
+SHOPIFY_API_KEY=your_shopify_api_key
+SHOPIFY_API_SECRET=your_shopify_api_secret
 
-#### Local Development
-
-[The Shopify CLI](https://shopify.dev/docs/apps/tools/cli) connects to an app in your Partners dashboard. It provides environment variables, runs commands in parallel, and updates application URLs for easier development.
-
-You can develop locally using your preferred package manager. Run one of the following commands from the root of your app.
-
-Using yarn:
-
-```shell
-yarn dev
+# Frontend (.env)
+BACKEND_PORT=3001
+FRONTEND_PORT=5173
+HOST=localhost
+SHOPIFY_API_KEY=your_shopify_api_key
 ```
 
-Using npm:
+3. **Start the development servers:**
+```bash
+# Terminal 1 - Backend
+cd backend
+npm run dev
 
-```shell
+# Terminal 2 - Frontend
+cd web/frontend
 npm run dev
 ```
 
-Using pnpm:
+4. **Access the app:**
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:3001
+- Health check: http://localhost:3001/health
 
-```shell
-pnpm run dev
+## 🧪 Testing with Products
+
+### Import Sample Products
+1. Navigate to the Dashboard
+2. Click "Import Products" in the Quick Actions section
+3. The app will fetch 5 products from your Shopify store
+4. Translation records will be created for each translatable field
+
+### Test Translation Workflow
+1. **Import Products**: Use the "Test with Products" button on the Dashboard
+2. **Review Translations**: Go to Translation Editor to see imported content
+3. **Auto-translate**: Click "Auto" buttons to translate pending items
+4. **Manual Edit**: Click "Edit" to fine-tune translations
+5. **Sync to Shopify**: Click "Sync" to push completed translations back to Shopify
+
+### API Testing
+1. Go to Settings → Testing tab
+2. Test API connections (Google Translate, Shopify, Database)
+3. Use the "Test Translation" feature to validate translation quality
+
+## 🔧 Configuration
+
+### Shopify App Setup
+1. Create a Shopify Partner account
+2. Create a new app in your Partner dashboard
+3. Configure the following scopes:
+   - `read_products`, `write_products`
+   - `read_pages`, `write_pages`
+   - `read_blogs`, `write_blogs`
+   - `read_articles`, `write_articles`
+   - `read_collections`, `write_collections`
+
+### Google Translate API
+1. Create a Google Cloud project
+2. Enable the Cloud Translation API
+3. Create an API key
+4. Add the key to your backend `.env` file
+
+### Database Setup
+The app uses SQLite for development and PostgreSQL for production:
+
+```sql
+-- Development (SQLite)
+-- Tables are created automatically on first run
+
+-- Production (PostgreSQL)
+CREATE DATABASE translify;
+-- Run migrations: npm run migrate
 ```
 
-Open the URL generated in your console. Once you grant permission to the app, you can start development.
+## 📊 Database Schema
 
-## Deployment
+### Core Tables
+- **merchants**: Store information and API credentials
+- **translations**: Translation records and status
+- **translation_jobs**: Background job queue
+- **glossaries**: Translation terminology
+- **do_not_translate**: Terms to exclude from translation
+- **translation_memory**: Reusable translation pairs
 
-### Application Storage
+### Key Relationships
+- Each merchant has multiple translations
+- Translations are linked to Shopify resources (products, pages, etc.)
+- Translation memory improves consistency over time
+- Glossary terms are applied during translation
 
-This template uses [SQLite](https://www.sqlite.org/index.html) to store session data. The database is a file called `database.sqlite` which is automatically created in the root. This use of SQLite works in production if your app runs as a single instance.
+## 🔄 API Endpoints
 
-The database that works best for you depends on the data your app needs and how it is queried. You can run your database of choice on a server yourself or host it with a SaaS company. Here’s a short list of databases providers that provide a free tier to get started:
+### Translations
+- `GET /translations/:merchantId` - List translations
+- `POST /translations/:merchantId/import-products` - Import products
+- `PUT /translations/:id` - Update translation
+- `POST /translations/:id/auto-translate` - Auto-translate
+- `POST /translations/:id/sync` - Sync to Shopify
 
-| Database   | Type             | Hosters                                                                                                                                                                                                                               |
-| ---------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| MySQL      | SQL              | [Digital Ocean](https://www.digitalocean.com/try/managed-databases-mysql), [Planet Scale](https://planetscale.com/), [Amazon Aurora](https://aws.amazon.com/rds/aurora/), [Google Cloud SQL](https://cloud.google.com/sql/docs/mysql) |
-| PostgreSQL | SQL              | [Digital Ocean](https://www.digitalocean.com/try/managed-databases-postgresql), [Amazon Aurora](https://aws.amazon.com/rds/aurora/), [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres)                                   |
-| Redis      | Key-value        | [Digital Ocean](https://www.digitalocean.com/try/managed-databases-redis), [Amazon MemoryDB](https://aws.amazon.com/memorydb/)                                                                                                        |
-| MongoDB    | NoSQL / Document | [Digital Ocean](https://www.digitalocean.com/try/managed-databases-mongodb), [MongoDB Atlas](https://www.mongodb.com/atlas/database)                                                                                                  |
+### Settings
+- `GET /settings/:merchantId` - Get settings
+- `PUT /settings/:merchantId` - Update settings
+- `POST /settings/:merchantId/test-connection` - Test APIs
+- `POST /settings/:merchantId/glossary` - Add glossary term
 
-To use one of these, you need to change your session storage configuration. To help, here’s a list of [SessionStorage adapter packages](https://github.com/Shopify/shopify-api-js/blob/main/packages/shopify-api/docs/guides/session-storage.md).
+### Webhooks
+- `POST /webhooks/products/create` - Handle new products
+- `POST /webhooks/products/update` - Handle product updates
+- `POST /webhooks/pages/create` - Handle new pages
 
-### Build
+## 🎨 Frontend Components
 
-The frontend is a single page app. It requires the `SHOPIFY_API_KEY`, which you can find on the page for your app in your partners dashboard. Paste your app’s key in the command for the package manager of your choice:
+### Polaris Integration
+The app uses Shopify's Polaris design system for consistent UI:
+- **Page**: Main page containers with actions
+- **Card**: Content containers with sections
+- **Layout**: Responsive grid system
+- **DataTable**: Sortable data tables
+- **Modal**: Overlay dialogs
+- **Tabs**: Tabbed navigation
 
-Using yarn:
+### Navigation Structure
+- **Dashboard**: Overview and quick actions
+- **Translation Editor**: Bulk translation management
+- **Settings**: App configuration and testing
+- **Glossary**: Terminology management
 
-```shell
-cd web/frontend/ && SHOPIFY_API_KEY=REPLACE_ME yarn build
-```
+## 🚀 Deployment
 
-Using npm:
+### Production Setup
+1. **Database**: Use PostgreSQL instead of SQLite
+2. **Redis**: Configure production Redis instance
+3. **Environment**: Set production environment variables
+4. **SSL**: Configure HTTPS for security
+5. **Monitoring**: Add logging and monitoring
 
-```shell
-cd web/frontend/ && SHOPIFY_API_KEY=REPLACE_ME npm run build
-```
+### Shopify App Store
+1. **App Review**: Submit for Shopify app review
+2. **Documentation**: Provide user documentation
+3. **Support**: Set up customer support channels
+4. **Pricing**: Configure subscription plans
 
-Using pnpm:
+## 🔒 Security
 
-```shell
-cd web/frontend/ && SHOPIFY_API_KEY=REPLACE_ME pnpm run build
-```
+### API Security
+- OAuth 2.0 for Shopify authentication
+- API key validation for Google Translate
+- Request rate limiting
+- Input validation and sanitization
 
-You do not need to build the backend.
+### Data Protection
+- Encrypted API keys
+- Secure database connections
+- GDPR compliance for user data
+- Regular security audits
 
-## Hosting
+## 📈 Performance
 
-When you're ready to set up your app in production, you can follow [our deployment documentation](https://shopify.dev/docs/apps/deployment/web) to host your app on a cloud provider like [Heroku](https://www.heroku.com/) or [Fly.io](https://fly.io/).
+### Optimization Strategies
+- **Background Jobs**: Use Bull queue for heavy operations
+- **Caching**: Redis for frequently accessed data
+- **Pagination**: Limit API response sizes
+- **Lazy Loading**: Load translations on demand
 
-When you reach the step for [setting up environment variables](https://shopify.dev/docs/apps/deployment/web#set-env-vars), you also need to set the variable `NODE_ENV=production`.
+### Monitoring
+- **Health Checks**: `/health` endpoint
+- **Error Tracking**: Comprehensive error logging
+- **Performance Metrics**: Response time monitoring
+- **Queue Monitoring**: Job queue status
 
-## Known issues
+## 🤝 Contributing
 
-### Hot module replacement and Firefox
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
 
-When running the app with the CLI in development mode on Firefox, you might see your app constantly reloading when you access it.
-That happened in previous versions of the CLI, because of the way HMR websocket requests work.
+## 📄 License
 
-We fixed this issue with v3.4.0 of the CLI, so after updating it, you can make the following changes to your app's `web/frontend/vite.config.js` file:
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-1. Change the definition `hmrConfig` object to be:
+## 🆘 Support
 
-   ```js
-   const host = process.env.HOST
-     ? process.env.HOST.replace(/https?:\/\//, "")
-     : "localhost";
+For support and questions:
+- Create an issue on GitHub
+- Check the documentation
+- Contact the development team
 
-   let hmrConfig;
-   if (host === "localhost") {
-     hmrConfig = {
-       protocol: "ws",
-       host: "localhost",
-       port: 64999,
-       clientPort: 64999,
-     };
-   } else {
-     hmrConfig = {
-       protocol: "wss",
-       host: host,
-       port: process.env.FRONTEND_PORT,
-       clientPort: 443,
-     };
-   }
-   ```
+---
 
-1. Change the `server.host` setting in the configs to `"localhost"`:
-
-   ```js
-   server: {
-     host: "localhost",
-     ...
-   ```
-
-### I can't get past the ngrok "Visit site" page
-
-When you’re previewing your app or extension, you might see an ngrok interstitial page with a warning:
-
-```text
-You are about to visit <id>.ngrok.io: Visit Site
-```
-
-If you click the `Visit Site` button, but continue to see this page, then you should run dev using an alternate tunnel URL that you run using tunneling software.
-We've validated that [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/run-tunnel/trycloudflare/) works with this template.
-
-To do that, you can [install the `cloudflared` CLI tool](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/installation/), and run:
-
-```shell
-# Note that you can also use a different port
-cloudflared tunnel --url http://localhost:3000
-```
-
-Out of the logs produced by cloudflare you will notice a https URL where the domain ends with `trycloudflare.com`. This is your tunnel URL. You need to copy this URL as you will need it in the next step.
-
-```shell
-2022-11-11T19:57:55Z INF Requesting new quick Tunnel on trycloudflare.com...
-2022-11-11T19:57:58Z INF +--------------------------------------------------------------------------------------------+
-2022-11-11T19:57:58Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
-2022-11-11T19:57:58Z INF |  https://randomly-generated-hostname.trycloudflare.com                                     |
-2022-11-11T19:57:58Z INF +--------------------------------------------------------------------------------------------+
-```
-
-Below you would replace `randomly-generated-hostname` with what you have copied from the terminal. In a different terminal window, navigate to your app's root and with the URL from above you would call:
-
-```shell
-# Using yarn
-yarn dev --tunnel-url https://randomly-generated-hostname.trycloudflare.com:3000
-# or using npm
-npm run dev --tunnel-url https://randomly-generated-hostname.trycloudflare.com:3000
-# or using pnpm
-pnpm dev --tunnel-url https://randomly-generated-hostname.trycloudflare.com:3000
-```
-
-## Developer resources
-
-- [Introduction to Shopify apps](https://shopify.dev/docs/apps/getting-started)
-- [App authentication](https://shopify.dev/docs/apps/auth)
-- [Shopify CLI](https://shopify.dev/docs/apps/tools/cli)
-- [Shopify API Library documentation](https://github.com/Shopify/shopify-api-js#readme)
-- [Getting started with internationalizing your app](https://shopify.dev/docs/apps/best-practices/internationalization/getting-started)
-  - [i18next](https://www.i18next.com/)
-    - [Configuration options](https://www.i18next.com/overview/configuration-options)
-  - [react-i18next](https://react.i18next.com/)
-    - [`useTranslation` hook](https://react.i18next.com/latest/usetranslation-hook)
-    - [`Trans` component usage with components array](https://react.i18next.com/latest/trans-component#alternative-usage-components-array)
-  - [i18n-ally VS Code extension](https://marketplace.visualstudio.com/items?itemName=Lokalise.i18n-ally)
+**Translify** - Making Shopify stores global, one translation at a time! 🌍

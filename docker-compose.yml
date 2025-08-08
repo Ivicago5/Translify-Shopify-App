@@ -1,0 +1,131 @@
+# =============================================================================
+# TRANSLIFY - SHOPIFY TRANSLATION APP
+# Docker Compose Configuration
+# =============================================================================
+
+
+
+services:
+  # Redis for job queues
+  redis:
+    image: redis:7-alpine
+    container_name: translify-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # PostgreSQL for production database
+  postgres:
+    image: postgres:15-alpine
+    container_name: translify-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: translify
+      POSTGRES_USER: translify_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-jebessise01}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U translify_user -d translify"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Backend application
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: translify-backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      # Database
+      DATABASE_URL: ${DATABASE_URL:-postgresql://translify_user:jebessise01@postgres:5432/translify}
+      
+      # Redis
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      
+      # Shopify
+      SHOPIFY_API_KEY: ${SHOPIFY_API_KEY}
+      SHOPIFY_API_SECRET: ${SHOPIFY_API_SECRET}
+      APP_URL: ${APP_URL:-http://localhost:3001}
+      
+      # Google Translate
+      GOOGLE_TRANSLATE_API_KEY: ${GOOGLE_TRANSLATE_API_KEY}
+      
+      # Security
+      SESSION_SECRET: ${SESSION_SECRET:-your_session_secret_here}
+      NODE_ENV: ${NODE_ENV:-production}
+      
+      # Logging
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend application
+  frontend:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: translify-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_BACKEND_URL=${BACKEND_URL:-http://localhost:3001}
+      - NODE_ENV=${NODE_ENV:-production}
+    depends_on:
+      - backend
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+
+  # Nginx reverse proxy (for production)
+  nginx:
+    image: nginx:alpine
+    container_name: translify-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - backend
+    profiles:
+      - production
+
+volumes:
+  redis_data:
+    driver: local
+  postgres_data:
+    driver: local
+
+networks:
+  default:
+    name: translify-network 

@@ -1,0 +1,113 @@
+{
+  "HomePage": {
+    "heading": "Nice work on building a Shopify app 🎉",
+    "learnMore": "Learn more about building out your app in <ShopifyTutorialLink>this Shopify tutorial</ShopifyTutorialLink> 📚",
+    "startPopulatingYourApp": "Ready to go? Start populating your app with some sample products to view and test in your store.",
+    "title": "App name",
+    "trophyAltText": "Nice work on building a Shopify app",
+    "yourAppIsReadyToExplore": "Your app is ready to explore! It contains everything you need to get started including the <PolarisLink>Polaris design system</PolarisLink>, <AdminApiLink>Shopify Admin API</AdminApiLink>, and <AppBridgeLink>App Bridge</AppBridgeLink> UI library and components."
+  },
+  "NavigationMenu": {
+    "pageName": "Page name",
+    "Dashboard": "Dashboard",
+    "Translation Editor": "Translation Editor",
+    "Glossary": "Glossary"
+  },
+  "NotFound": {
+    "description": "Check the URL and try again, or use the search bar to find what you need.",
+    "heading": "There is no page at this address"
+  },
+  "PageName": {
+    "body": "Body",
+    "heading": "Heading",
+    "primaryAction": "Primary action",
+    "secondaryAction": "Secondary action",
+    "title": "Page name"
+  },
+  "ProductsCard": {
+    "description": "Sample products are created with a default title and price. You can remove them at any time.",
+    "errorCreatingProductsToast": "There was an error creating products",
+    "populateProductsButton": {
+      "one": "Populate {{count}} product",
+      "other": "Populate {{count}} products"
+    },
+    "productsCreatedToast": {
+      "one": "{{count}} product created!",
+      "other": "{{count}} products created!"
+    },
+    "title": "Product Counter",
+    "totalProductsHeading": "TOTAL PRODUCTS"
+  },
+  "Settings": {
+    "title": "Settings",
+    "loading": "Loading settings...",
+    "save": "Save Settings",
+    "General": {
+      "title": "General Settings",
+      "apiKey": "Google Translate API Key",
+      "apiKeyPlaceholder": "Enter your Google Translate API key",
+      "apiKeyHelp": "Required for automatic translation functionality",
+      "autoTranslate": "Enable automatic translation",
+      "autoTranslateHelp": "Automatically translate new content using Google Translate",
+      "autoSync": "Auto-sync to Shopify",
+      "autoSyncHelp": "Automatically sync completed translations to your Shopify store"
+    },
+    "Languages": {
+      "title": "Target Languages",
+      "description": "Select the languages you want to translate your content into:"
+    },
+    "Automation": {
+      "title": "Automation Rules",
+      "description": "Configure automatic translation rules for different content types:",
+      "productContent": "Product Content",
+      "autoTranslateTitles": "Auto-translate product titles",
+      "autoTranslateDescriptions": "Auto-translate product descriptions",
+      "autoTranslateTags": "Auto-translate product tags",
+      "pageContent": "Page Content",
+      "autoTranslatePageTitles": "Auto-translate page titles",
+      "autoTranslatePageContent": "Auto-translate page content",
+      "autoTranslateMetaDescriptions": "Auto-translate meta descriptions"
+    },
+    "Glossary": {
+      "title": "Translation Glossary",
+      "description": "Manage your translation glossary to ensure consistent terminology across all translations.",
+      "addTerm": "Add Term",
+      "original": "Original Term",
+      "translated": "Translated Term",
+      "language": "Language",
+      "actions": "Actions",
+      "remove": "Remove",
+      "emptyState": {
+        "title": "No glossary terms",
+        "description": "Add glossary terms to ensure consistent translations across your store."
+      },
+      "addTermModal": {
+        "title": "Add Glossary Term",
+        "add": "Add Term",
+        "cancel": "Cancel",
+        "original": "Original Term",
+        "originalPlaceholder": "Enter original term...",
+        "translated": "Translated Term",
+        "translatedPlaceholder": "Enter translated term...",
+        "language": "Language"
+      }
+    },
+    "Testing": {
+      "title": "API Testing",
+      "description": "Test your API connections and translation services:",
+      "connectionTests": "Connection Tests",
+      "testAllConnections": "Test All Connections",
+      "allTestsPassed": "All tests passed!",
+      "someTestsFailed": "Some tests failed",
+      "googleTranslateAPI": "Google Translate API",
+      "shopifyAPI": "Shopify API",
+      "databaseConnection": "Database Connection",
+      "testTranslation": "Test Translation",
+      "testText": "Test Text",
+      "testTargetLanguage": "Target Language",
+      "translationPassed": "Translation passed!",
+      "translationFailed": "Translation failed",
+      "testTranslationButton": "Test Translation"
+    }
+  }
+}

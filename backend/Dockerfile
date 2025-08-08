@@ -1,6 +1,6 @@
 # =============================================================================
-# TRANSLIFY - SHOPIFY TRANSLATION APP
-# Production Dockerfile
+# TRANSLIFY BACKEND - SHOPIFY TRANSLATION APP
+# Backend Dockerfile
 # =============================================================================
 
 # Use Node.js 18 Alpine for smaller image size
@@ -18,20 +18,12 @@ RUN apk add --no-cache \
 
 # Copy package files
 COPY package*.json ./
-COPY web/package*.json ./web/
-COPY web/frontend/package*.json ./web/frontend/
-COPY backend/package*.json ./backend/
 
 # Install dependencies
-RUN npm ci --only=production && \
-    cd web && npm ci --only=production && \
-    cd frontend && npm ci --only=production
+RUN npm ci --only=production
 
 # Copy application code
 COPY . .
-
-# Build frontend
-RUN cd web/frontend && npm run build
 
 # Create non-root user for security
 RUN addgroup -g 1001 -S nodejs && \
@@ -52,4 +44,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD node -e "require('http').get('http://localhost:3001/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
 
 # Start the application
-CMD ["npm", "start"]
+CMD ["npm", "start"] 

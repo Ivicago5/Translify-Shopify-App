@@ -1,0 +1,307 @@
+{% comment %}
+  TRANSLIFY - LANGUAGE SWITCHER BLOCK
+  Theme App Extension Block
+  
+  This block can be added to theme templates to provide a customizable
+  language switcher component.
+  
+  Usage in theme customizer:
+  {% section 'translify-language-switcher' %}
+{% endcomment %}
+
+{% comment %} Get block settings {% endcomment %}
+{% assign show_flags = block.settings.show_flags | default: true %}
+{% assign show_names = block.settings.show_names | default: true %}
+{% assign position = block.settings.position | default: 'header' %}
+{% assign style = block.settings.style | default: 'dropdown' %}
+
+{% comment %} Get app settings {% endcomment %}
+{% assign translify_settings = shop.metafields.translify_app.settings %}
+{% assign available_languages = translify_settings.available_languages | default: '["en", "es", "fr", "de"]' | parse_json %}
+{% assign default_language = translify_settings.default_language | default: 'en' %}
+
+{% comment %} Language data {% endcomment %}
+{% assign language_data = '{"en":{"name":"English","flag":"🇺🇸"},"es":{"name":"Español","flag":"🇪🇸"},"fr":{"name":"Français","flag":"🇫🇷"},"de":{"name":"Deutsch","flag":"🇩🇪"},"it":{"name":"Italiano","flag":"🇮🇹"},"pt":{"name":"Português","flag":"🇵🇹"},"nl":{"name":"Nederlands","flag":"🇳🇱"},"ja":{"name":"日本語","flag":"🇯🇵"},"ko":{"name":"한국어","flag":"🇰🇷"},"zh":{"name":"中文","flag":"🇨🇳"}}' | parse_json %}
+
+{% comment %} Get current language from URL or localStorage {% endcomment %}
+{% assign current_lang = request.query_string | split: 'lang=' | last | split: '&' | first %}
+{% if current_lang == blank %}
+  {% assign current_lang = default_language %}
+{% endif %}
+
+{% comment %} Ensure current language is available {% endcomment %}
+{% unless available_languages contains current_lang %}
+  {% assign current_lang = default_language %}
+{% endunless %}
+
+<div class="translify-language-switcher-block" 
+     data-position="{{ position }}" 
+     data-style="{{ style }}"
+     data-current-lang="{{ current_lang }}"
+     data-available-langs="{{ available_languages | json }}"
+     data-language-data="{{ language_data | json }}">
+  
+  {% if style == 'dropdown' %}
+    {% comment %} Dropdown style switcher {% endcomment %}
+    <div class="translify-block-switcher translify-block-switcher--dropdown">
+      <button class="translify-block-switcher__button" 
+              onclick="window.translifyEngine?.switchLanguage('{{ current_lang }}') || console.log('Translify not loaded')">
+        {% if show_flags %}
+          <span class="translify-block-switcher__flag">{{ language_data[current_lang].flag }}</span>
+        {% endif %}
+        {% if show_names %}
+          <span class="translify-block-switcher__name">{{ language_data[current_lang].name }}</span>
+        {% endif %}
+        <span class="translify-block-switcher__arrow">▼</span>
+      </button>
+      
+      <div class="translify-block-switcher__dropdown">
+        {% for lang in available_languages %}
+          {% if lang != current_lang %}
+            <button class="translify-block-switcher__option" 
+                    onclick="window.translifyEngine?.switchLanguage('{{ lang }}') || console.log('Translify not loaded')">
+              {% if show_flags %}
+                <span class="translify-block-switcher__flag">{{ language_data[lang].flag }}</span>
+              {% endif %}
+              {% if show_names %}
+                <span class="translify-block-switcher__name">{{ language_data[lang].name }}</span>
+              {% endif %}
+            </button>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    
+  {% elsif style == 'buttons' %}
+    {% comment %} Button style switcher {% endcomment %}
+    <div class="translify-block-switcher translify-block-switcher--buttons">
+      {% for lang in available_languages %}
+        <button class="translify-block-switcher__button translify-block-switcher__button--{{ lang }} {% if lang == current_lang %}active{% endif %}"
+                onclick="window.translifyEngine?.switchLanguage('{{ lang }}') || console.log('Translify not loaded')">
+          {% if show_flags %}
+            <span class="translify-block-switcher__flag">{{ language_data[lang].flag }}</span>
+          {% endif %}
+          {% if show_names %}
+            <span class="translify-block-switcher__name">{{ language_data[lang].name }}</span>
+          {% endif %}
+        </button>
+      {% endfor %}
+    </div>
+    
+  {% elsif style == 'list' %}
+    {% comment %} List style switcher {% endcomment %}
+    <div class="translify-block-switcher translify-block-switcher--list">
+      {% for lang in available_languages %}
+        <a href="?lang={{ lang }}" 
+           class="translify-block-switcher__link {% if lang == current_lang %}active{% endif %}">
+          {% if show_flags %}
+            <span class="translify-block-switcher__flag">{{ language_data[lang].flag }}</span>
+          {% endif %}
+          {% if show_names %}
+            <span class="translify-block-switcher__name">{{ language_data[lang].name }}</span>
+          {% endif %}
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+
+<style>
+  /* Block-specific styles */
+  .translify-language-switcher-block {
+    display: inline-block;
+    margin: 10px 0;
+  }
+  
+  /* Dropdown style */
+  .translify-block-switcher--dropdown {
+    position: relative;
+  }
+  
+  .translify-block-switcher__button {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+  }
+  
+  .translify-block-switcher__button:hover {
+    border-color: #999;
+    background: #f9f9f9;
+  }
+  
+  .translify-block-switcher__dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+    min-width: 150px;
+    display: none;
+  }
+  
+  .translify-block-switcher--dropdown:hover .translify-block-switcher__dropdown {
+    display: block;
+  }
+  
+  .translify-block-switcher__option {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s ease;
+  }
+  
+  .translify-block-switcher__option:hover {
+    background: #f5f5f5;
+  }
+  
+  /* Buttons style */
+  .translify-block-switcher--buttons {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+  
+  .translify-block-switcher__button--active {
+    background: #1976d2 !important;
+    color: #fff !important;
+    border-color: #1976d2 !important;
+  }
+  
+  /* List style */
+  .translify-block-switcher--list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .translify-block-switcher__link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 0;
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s ease;
+  }
+  
+  .translify-block-switcher__link:hover {
+    color: #1976d2;
+  }
+  
+  .translify-block-switcher__link.active {
+    color: #1976d2;
+    font-weight: bold;
+  }
+  
+  /* Common elements */
+  .translify-block-switcher__flag {
+    font-size: 16px;
+  }
+  
+  .translify-block-switcher__name {
+    font-size: 14px;
+  }
+  
+  .translify-block-switcher__arrow {
+    font-size: 10px;
+    margin-left: 5px;
+  }
+  
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .translify-block-switcher__button {
+      padding: 6px 8px;
+      font-size: 12px;
+    }
+    
+    .translify-block-switcher__name {
+      font-size: 12px;
+    }
+    
+    .translify-block-switcher__flag {
+      font-size: 14px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Language Switcher",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "style",
+      "label": "Switcher Style",
+      "options": [
+        {
+          "value": "dropdown",
+          "label": "Dropdown"
+        },
+        {
+          "value": "buttons",
+          "label": "Buttons"
+        },
+        {
+          "value": "list",
+          "label": "List"
+        }
+      ],
+      "default": "dropdown"
+    },
+    {
+      "type": "select",
+      "id": "position",
+      "label": "Position",
+      "options": [
+        {
+          "value": "header",
+          "label": "Header"
+        },
+        {
+          "value": "footer",
+          "label": "Footer"
+        },
+        {
+          "value": "sidebar",
+          "label": "Sidebar"
+        }
+      ],
+      "default": "header"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_flags",
+      "label": "Show Flags",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_names",
+      "label": "Show Language Names",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Language Switcher"
+    }
+  ]
+}
+{% endschema %} 

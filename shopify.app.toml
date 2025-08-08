@@ -3,21 +3,45 @@
 client_id = "75c73e62d49a0ff0c5098f0df31be145"
 name = "Translify"
 handle = "translify-1"
-application_url = "https://example.com/"
+application_url = "http://localhost:3001"
 embedded = true
+
+# Web directories configuration
+web_directories = ["."]
 
 [build]
 include_config_on_deploy = true
+automatically_update_urls_on_dev = true
+
+# Theme App Extension - moved to separate configuration
 
 [webhooks]
 api_version = "2025-07"
+# Translation app webhooks
+topics = [
+  "products/create",
+  "products/update", 
+  "products/delete",
+  "pages/create",
+  "pages/update",
+  "pages/delete",
+  "blogs/create",
+  "blogs/update",
+  "blogs/delete",
+  "articles/create",
+  "articles/update",
+  "articles/delete",
+  "collections/create",
+  "collections/update",
+  "collections/delete"
+]
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products"
+scopes = "read_products,write_products,read_translations,write_translations,read_content,write_content,read_pages,write_pages,read_blogs,write_blogs,read_articles,write_articles,read_collections,write_collections"
 
 [auth]
-redirect_urls = [ "https://example.com/api/auth" ]
+redirect_urls = [ "http://localhost:3001/api/auth" ]
 
 [pos]
 embedded = false

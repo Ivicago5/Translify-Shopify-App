@@ -1,0 +1,16 @@
+# Theme App Extension Configuration
+# This extension adds translation functionality to Shopify themes
+
+name = "Translify Translation App"
+type = "theme_app_extension"
+
+[capabilities]
+api_access = true
+network_access = true
+
+[settings]
+api_endpoint = { type = "single_line_text_field", name = "API Endpoint", default = "https://translify.com/api", help_text = "The API endpoint for translation services" }
+merchant_id = { type = "single_line_text_field", name = "Merchant ID", default = "1", help_text = "Your merchant ID for translation services" }
+auto_translation = { type = "checkbox", name = "Enable Auto Translation", default = true, help_text = "Automatically translate content when available" }
+default_language = { type = "select", name = "Default Language", options = [{ label = "English", value = "en" }, { label = "Spanish", value = "es" }, { label = "French", value = "fr" }, { label = "German", value = "de" }, { label = "Italian", value = "it" }, { label = "Portuguese", value = "pt" }, { label = "Dutch", value = "nl" }, { label = "Japanese", value = "ja" }, { label = "Korean", value = "ko" }, { label = "Chinese", value = "zh" }], default = "en", help_text = "Default language for the store" }
+available_languages = { type = "multi_select", name = "Available Languages", options = [{ label = "English", value = "en" }, { label = "Spanish", value = "es" }, { label = "French", value = "fr" }, { label = "German", value = "de" }, { label = "Italian", value = "it" }, { label = "Portuguese", value = "pt" }, { label = "Dutch", value = "nl" }, { label = "Japanese", value = "ja" }, { label = "Korean", value = "ko" }, { label = "Chinese", value = "zh" }], default = ["en", "es", "fr", "de"], help_text = "Languages available for customers to switch between" } 
