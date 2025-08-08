@@ -30,7 +30,7 @@ services:
     environment:
       POSTGRES_DB: translify
       POSTGRES_USER: translify_user
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-jebessise01}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
